@@ -1,40 +1,75 @@
 #include <stdio.h>
+#include <stdlib.h>
+#define MAXS 500
 
-int n;
-int eps[10][10];  // epsilon transition matrix
-int visited[10];
+int main()
+{
+    int num=0, nooftrans=0;
+    int closure[MAXS][MAXS];
 
-void dfs(int i) {
-    visited[i] = 1;
-    for (int j = 0; j < n; j++) {
-        if (eps[i][j] && !visited[j])
-            dfs(j);
-    }
-}
-
-int main() {
-    printf("Enter number of states: ");
-    scanf("%d", &n);
-
-    printf("Enter epsilon transition matrix (%dx%d):\n", n, n);
-    printf("(1 if epsilon transition exists, else 0)\n");
-
-    for (int i = 0; i < n; i++)
-        for (int j = 0; j < n; j++)
-            scanf("%d", &eps[i][j]);
-
-    for (int i = 0; i < n; i++) {
-        for (int k = 0; k < n; k++)
-            visited[k] = 0;
-
-        dfs(i);
-
-        printf("ε-closure(q%d) = { ", i);
-        for (int k = 0; k < n; k++)
-            if (visited[k])
-                printf("q%d ", k);
-        printf("}\n");
+    FILE *fp=fopen("input.txt","r");
+    if(!fp)
+    {
+        printf("Error");
     }
 
-    return 0;
+    fscanf(fp,"%d",&num);
+    fscanf(fp,"%d",&nooftrans);
+
+    for(int i=0;i<num;i++)
+    {
+        closure[i][i]=1;
+    }
+
+    int from,to;
+    char symbol;
+
+    for(int i=0;i<nooftrans;i++)
+    {
+        if(fscanf(fp,"%d%d%c",&from,&to,&symbol)!=3)
+        {
+            printf("Error");
+        }
+
+        else
+        {
+            if(symbol=='e')
+            {
+                closure[from][to]=1;
+            }
+        }
+    }
+
+    fclose(fp);
+
+    for(int k=0;k<num;k++)
+    {
+        for(int i=0;i<num;i++)
+        {
+            for(int j=0;j<num;j++)
+            {
+                if(closure[i][k] && closure[k][j])
+                {
+                    closure[i][j]=1;
+                }
+            }
+        }
+    }
+
+    for(int i=0;i<num;i++)
+    {
+        printf("Epsilon Closure(%d)->{",i);
+        for(int j=0;j<num;j++)
+        {
+            if(closure[i][j])
+            {
+                printf("q%d ,",j);
+            }
+        }
+        printf("\n");
+    }
+
+
+return 0;
 }
+
