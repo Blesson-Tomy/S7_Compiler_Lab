@@ -1,59 +1,91 @@
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
-char input[20];
-char stack[20];
-int top = -1;
-int i = 0;
+int check(char* stk, int* i, char* ip)
+{ char acb[]="REDUCE TO E";
+    if(*i>=2 && stk[*i-2]=='i' && stk[*i-1]=='d')
+    {   
+        stk[*i-2]='E';
+        stk[*i-1]='\0';
+        (*i)--;
+        printf("\n$%s\t%s$\t %s",stk,ip,acb);
+        return 1;
+    }
+    if(*i>=3 && stk[*i-3]=='E' && stk[*i-2]=='+' && stk[*i-1]=='E')
+    {
+        stk[*i-3]='E';
+        stk[*i-2]='\0';
+        (*i)--;
+        (*i)--;
+        printf("\n$%s \t %s$ \t%s",stk,ip,acb);
+        return 1;
+    }
+    if(*i>=3 && stk[*i-3]=='E' && stk[*i-2]=='*' && stk[*i-1]=='E')
+    {
+        stk[*i-3]='E';
+        stk[*i-2]='\0';
+        (*i)--;
+        (*i)--;
+        printf("\n$%s\t%s$\t%s",stk,ip,acb);
+        return 1;
+    }
 
-void check() {
-    // Check for possible reductions
-    if (top >= 2 && stack[top] == 'E' && stack[top-1] == '+' && stack[top-2] == 'E') {
-        stack[top-2] = 'E';
-        top -= 2;
-        printf("\tReduce by E → E+E\n");
+    if(*i>=3 && stk[*i-3]=='(' && stk[*i-2]=='E' && stk[*i-1]==')')
+    {
+        stk[*i-3]='E';
+        stk[*i-2]='\0';
+        (*i)--;
+        (*i)--;
+        printf("\n$%s\t%s$\t%s",stk,ip,acb);
+        return 1;
     }
-    else if (top >= 2 && stack[top] == 'E' && stack[top-1] == '*' && stack[top-2] == 'E') {
-        stack[top-2] = 'E';
-        top -= 2;
-        printf("\tReduce by E → E*E\n");
-    }
-    else if (top >= 2 && stack[top] == ')' && stack[top-1] == 'E' && stack[top-2] == '(') {
-        stack[top-2] = 'E';
-        top -= 2;
-        printf("\tReduce by E → (E)\n");
-    }
-    else if (top >= 1 && stack[top] == 'd' && stack[top-1] == 'i') {
-        stack[top-1] = 'E';
-        top--;
-        printf("\tReduce by E → id\n");
-    }
+    return 0;
 }
 
-int main() {
-    printf("Enter an expression (use 'id' for identifiers): ");
-    scanf("%s", input);
-    
-    printf("\nStack\t\tInput\t\tAction\n");
-    printf("--------------------------------------------------\n");
+int main()
+{   int i=0;
+    char ip[15], stk[15], ac[15];
+    printf("Enter the expression: ");
+    scanf("%s", ip);
+    int len=strlen(ip);
+    strcpy(ac,"SHIFT->");
 
-    while (i < strlen(input)) {
-        // Shift
-        stack[++top] = input[i];
-        input[i] = ' ';
-        i++;
+    printf("STACK\t INPUT\t ACTION");
+
+    for(int j=0;j<len;j++)
+    {
+        if(ip[j]=='i' && j+1<len && ip[j+1]=='d')
+        {
+            stk[i]=ip[j];
+            stk[i+1]=ip[j+1];
+            stk[i+2]='\0';
+            ip[j]=' ';
+            ip[j+1]=' ';
+            i++;
+            i++;
+            j++;
+            printf("\n$%s\t%s$\t %sid",stk,ip,ac);
+        }
+        else{
+            stk[i]=ip[j];
+            ip[j]=' ';
+            stk[i+1]='\0';
+            i++;
+            printf("\n$%s\t%s$\t %ssymbol",stk,ip,ac);
+
+        }
+
+        while(check(stk,&i,ip));
         
-        printf("%s\t\t%s\t\tShift\n", stack, input);
-        check();
     }
 
-    // Just call check() once at the end (loop not needed)
-    check();
-
-    if (stack[0] == 'E' && top == 0)
-        printf("\nInput accepted: successfully parsed!\n");
-    else
-        printf("\nInput not accepted: parsing failed.\n");
-
+    if(strcmp(stk,"E")==0)
+    {
+        printf("Successful");
+    }
+    else{
+        printf("Invalid String");
+    }
     return 0;
 }
