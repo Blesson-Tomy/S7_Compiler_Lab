@@ -1,13 +1,15 @@
 %{
-#include "y.tab.h"
+#include "exp.tab.h"
 %}
 
 %%
-[0-9]+ { yylval = atoi(yytext); return DIGIT;}
+[0-9]+ {
+    yylval=atoi(yytext);
+    return DIGIT;
+}
 [\n] {return NL;}
-[\t] {}
+[+\-*/] {return yytext[0];}
 . {printf("Invalid");}
-[+/-*] {return yytext[0];}
 %%
 
 int yywrap()

@@ -38,7 +38,7 @@ while((c=fgetc(fp))!=EOF)
     {
         printf("%c is an operator\n",c);
     }
-}
+    }
     for(int j=0;j<6;j++)
     {
     if(c==spop[j])

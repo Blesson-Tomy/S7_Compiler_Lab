@@ -1,34 +1,34 @@
 %{
-#include<stdio.h>
-#include<stdlib.h>
-int yyerror(char *msg);
+#include <stdio.h>
+#include <stdlib.h>
+#define YYSTYPE double
+void yyerror(char* msg);
 int yylex();
 %}
-%token DIGIT ID NL
-%left '-' '+'
-%left '*' '/'
+
+%token NL ID DIGIT
+%left '-''+'
+%left '*''/'
+
 
 %%
-stmt: exp NL {printf("Valid"); exit(0);};
-
-exp: exp '+' exp
-| exp '-' exp
-| exp '*' exp
-| exp '/' exp
-| '(' exp ')'
-| ID
-| DIGIT
+stmt: exp NL {printf("Valid Expression"); exit(0);}
+exp: exp '+' exp | exp '-' exp | exp '*' exp | exp '/' exp |'(' exp ')' | ID | DIGIT;
 %%
 
-int yyerror(char *msg)
+void yyerror(char* msg)
 {
-    printf("Invalid");
-    return 1;
+    printf("Invalid String");
 }
 
 int main()
-{
-    printf("Enter exp");
+{   
+    printf("Enter the expression: ");
     yyparse();
     return 0;
 }
+
+
+
+
+

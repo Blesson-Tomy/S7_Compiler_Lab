@@ -1,27 +1,23 @@
 %{
 #include<stdio.h>
 #include<stdlib.h>
+#define YYSTYPE double
+void yyerror(char* msgs);
 int yylex();
-int yyerror(char *msg);
 %}
 
-%token ID INVALID NL
-
+%token ID NL DIGIT
 
 %%
-stmt: exp NL {printf("Valid identifier\n");};
+stmt: exp NL {printf("Valid Expression");};
 exp: ID;
 %%
 
-int yyerror(char *msg)
+void yyerror(char* msgs)
 {
-    printf("Invalid");
-    return 1;
+    printf("Error");
 }
-
 int main()
 {
-    printf("Enter the exp");
     yyparse();
-    return 0;
 }

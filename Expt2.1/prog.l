@@ -1,44 +1,40 @@
 %{
 #include<stdio.h>
-int num=0;
-int i=0,k=0,n=0,o=0;
+int num,ch,words,op;
 %}
 
 %%
-if|else|for|while|int|char {
-    printf("%s is a keyword",yytext);
+
+if|else|hello {
+    printf("%s is Keywords\n",yytext);
     num++;
-    k++;
 }
 
 [0-9]+ {
-    printf("%s is a number",yytext);
+    printf("Number");
     num++;
-    n++;
 }
-[_a-zA-Z][_a-zA-Z0-9]* {
-    printf("%s is a identifier",yytext);
-    num++;
-    i++;
-}
-"+"|"-"|"*"|"/"|"<"|">" {
-    printf("%s is a operator",yytext);
-    num++;
-    o++;
-}
+[a-zA-Z][_a-zzA-Z0-9]* {printf("%s Word\n",yytext);
+    words++;
 
-[ \t\n] {}
+}
+"="|"<"|">"|"-" {printf("%s Operator\n",yytext);
+    op++;
 
+}
+[\n\t] {}
 . {}
 
 %%
+
 int main()
 {
     yylex();
-    printf("%d %d %d %d", k,i,o,n);
+    printf("%d %d",words,op);
     return 0;
 }
 
-int yywrap(){
+int yywrap()
+{
     return 1;
 }

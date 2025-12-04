@@ -6,8 +6,7 @@
 
 %%
 abc {printf("ABC");}
-. {printf("%s",yytext);}
-%%
+. {printf(yytext);}
 
 int main()
 {   
